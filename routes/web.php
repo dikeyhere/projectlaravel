@@ -7,8 +7,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/pegawai', function () {
-    return view('hrd/pegawai');
-});
+// Route::get('/pegawai', function () {
+//     return view('hrd/pegawai');
+// });
 
 Route::resource('pegawais', PegawaiController::class);
