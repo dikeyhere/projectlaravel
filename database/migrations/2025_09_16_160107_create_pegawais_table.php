@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tglmasuk');
             $table->decimal('gaji', 10, 0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -12,3 +12,5 @@ Route::get('/', function () {
 // });
 
 Route::resource('pegawais', PegawaiController::class);
+Route::get('pegawais/{id}/restore', [PegawaiController::class, 'restore'])->name('pegawais.restore');
+Route::delete('pegawais/{id}/force-delete', [PegawaiController::class, 'forceDelete'])->name('pegawais.forceDelete');

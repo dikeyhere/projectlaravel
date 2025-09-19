@@ -54,7 +54,7 @@
                 </thead>
                 <tbody>
                     @foreach($pegawais as $pegawai)
-                    <tr>
+                    <tr @if($pegawai->trashed()) class="table-danger" @endif>
                         <td class="text-center">{{ $pegawai->id }}</td>
                         <td>{{ $pegawai->nama }}</td>
                         <td>{{ $pegawai->jabatan }}</td>
@@ -63,14 +63,34 @@
                         <td>{{ $pegawai->alamat }}</td>
                         <td class="text-center">{{ $pegawai->tglmasuk }}</td>
                         <td class="text-center">Rp {{ number_format($pegawai->gaji, 0, ',', '.') }}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                             <a href="{{ route('pegawais.edit', $pegawai->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('pegawais.destroy', $pegawai->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus pegawai ini?')">Hapus</button>
                             </form>
+                        </td> -->
+                        <td>
+                            @if(!$pegawai->trashed())
+                            <a href="{{ route('pegawais.edit', $pegawai->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <form action="{{ route('pegawais.destroy', $pegawai->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus pegawai ini?')">Hapus</button>
+                            </form>
+                            @else
+
+                            <a href="{{ route('pegawais.restore', $pegawai->id) }}" class="btn btn-sm btn-success">Restore</a>
+
+                            <form action="{{ route('pegawais.forceDelete', $pegawai->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-dark">Hapus</button>
+                            </form>
+                            @endif
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>

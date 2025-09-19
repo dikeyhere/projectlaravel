@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 
 class PegawaiController extends Controller
 {
+    // public function index()
+    // {
+    //     $pegawais = Pegawai::all();
+    //     return view('hrd.pegawai', compact('pegawais'));
+    // }
+
     public function index()
     {
-        $pegawais = Pegawai::all();
+        $pegawais = Pegawai::withTrashed()->get();
         return view('hrd.pegawai', compact('pegawais'));
     }
+
 
     public function create()
     {
@@ -100,5 +107,21 @@ class PegawaiController extends Controller
         $pegawai->delete();
 
         return redirect()->route('pegawais.index')->with('success', 'Data pegawai berhasil dihapus.');
+    }
+
+    public function restore($id)
+    {
+        $pegawai = Pegawai::withTrashed()->findOrFail($id);
+        $pegawai->restore();
+
+        return redirect()->route('pegawais.index')->with('success', 'Pegawai berhasil dikembalikan');
+    }
+
+    public function forceDelete($id)
+    {
+        $pegawai = Pegawai::withTrashed()->findOrFail($id);
+        $pegawai->forceDelete();
+
+        return redirect()->route('pegawais.index')->with('success', 'Pegawai dihapus permanen');
     }
 }
