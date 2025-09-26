@@ -8,12 +8,6 @@ use Illuminate\Http\Request;
 
 class PegawaiController extends Controller
 {
-    // public function index()
-    // {
-    //     $pegawais = Pegawai::all();
-    //     return view('hrd.pegawai', compact('pegawais'));
-    // }
-
     public function index()
     {
         $pegawais = Pegawai::withTrashed()->get();
@@ -26,12 +20,6 @@ class PegawaiController extends Controller
         return view('hrd.inputpegawai');
     }
 
-    // public function store(Request $request)
-    // {
-    //     Pegawai::create($request->all());
-    //     return redirect()->route('pegawais.index');
-    // }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -40,6 +28,9 @@ class PegawaiController extends Controller
             'email' => 'required|email|max:100|unique:pegawais,email',
             'telp' => 'required|string|max:15|unique:pegawais,telp',
             'jabatan' => 'required|string|max:50',
+            'tglmasuk' => 'required|date',
+            'gaji' => 'required|numeric|min:0',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nama.unique' => 'Nama sudah terdaftar, gunakan yang lain',
@@ -50,9 +41,23 @@ class PegawaiController extends Controller
             'telp.required' => 'Nomor telepon wajib diisi',
             'telp.unique' => 'Nomor telepon sudah terdaftar',
             'jabatan.required' => 'Jabatan wajib dipilih',
+            'tglmasuk.required' => 'Tanggal Masuk wajib diisi',
+            'gaji.required' => 'Gaji wajib diisi',
         ]);
 
-        Pegawai::create($request->all());
+        // Pegawai::create($request->all());
+
+        $pegawai = new Pegawai($request->except('profile_photo'));
+
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/profile_photos', $filename);
+
+            $pegawai->profile_photo = $filename;
+        }
+
+        $pegawai->save();
 
         return redirect()->route('pegawais.index')
             ->with('success', 'Pegawai berhasil ditambahkan.');
@@ -65,14 +70,6 @@ class PegawaiController extends Controller
         return view('hrd.editpegawai', compact('pegawai'));
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $pegawai = Pegawai::findOrFail($id);
-    //     $pegawai->update($request->all());
-
-    //     return redirect()->route('pegawais.index')->with('success', 'Data pegawai berhasil diperbarui.');
-    // }
-
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -81,6 +78,9 @@ class PegawaiController extends Controller
             'email' => 'required|email|max:100|unique:pegawais,email,' . $id,
             'telp' => 'required|string|max:15|unique:pegawais,telp,' . $id,
             'jabatan' => 'required|string|max:50',
+            'tglmasuk' => 'required|date',
+            'gaji' => 'required|numeric|min:0',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nama.unique' => 'Nama sudah terdaftar',
@@ -91,10 +91,30 @@ class PegawaiController extends Controller
             'telp.required' => 'Nomor telepon wajib diisi',
             'telp.unique' => 'Nomor telepon sudah terdaftar',
             'jabatan.required' => 'Jabatan wajib dipilih',
+            'tglmasuk.required' => 'Tanggal Masuk wajib diisi',
+            'gaji.required' => 'Gaji wajib diisi',
         ]);
 
         $pegawai = Pegawai::findOrFail($id);
-        $pegawai->update($request->all());
+        // $pegawai->update($request->all());
+
+        $pegawai->nama = $request->nama;
+        $pegawai->alamat = $request->alamat;
+        $pegawai->email = $request->email;
+        $pegawai->telp = $request->telp;
+        $pegawai->jabatan = $request->jabatan;
+        $pegawai->tglmasuk = $request->tglmasuk;
+        $pegawai->gaji = $request->gaji;
+
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/profile_photos', $filename);
+
+            $pegawai->profile_photo = $filename;
+        }
+
+        $pegawai->save();
 
         return redirect()->route('pegawais.index')
             ->with('success', 'Data pegawai berhasil diperbarui.');

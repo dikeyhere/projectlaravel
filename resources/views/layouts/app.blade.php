@@ -22,7 +22,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">Wanna Be Studio
+                <a class="navbar-brand" href="{{ url('/home') }}">Wanna Be Studio
                     <!-- {{ config('app.name', 'Laravel') }} -->
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -31,9 +31,16 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
+                     @auth
                     <ul class="navbar-nav me-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pegawais.index') }}">{{ __('Daftar Pegawai') }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pegawais.create') }}">{{ __('Tambah Data Pegawai') }}</a>
+                        </li>
                     </ul>
+                    @endauth
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
@@ -51,9 +58,9 @@
                         </li>
                         @endif
                         @else
-                        <a href="{{ route('pegawais.index') }}" class="btn btn-primary btn-sm me-2 text-center align-middle">
+                        <!-- <a href="{{ route('pegawais.index') }}" class="btn btn-primary btn-sm me-2 text-center align-middle">
                             Pegawai
-                        </a>
+                        </a> -->
 
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -67,6 +74,11 @@
                                     {{ __('Logout') }}
                                 </a>
 
+                                <a class="dropdown-item" href="{{ route('profile.index') }}"
+                                    >
+                                    {{ __('Profile') }}
+                                </a>
+
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
@@ -78,7 +90,7 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-1 pb-0 mb-0">
             @yield('content')
         </main>
     </div>

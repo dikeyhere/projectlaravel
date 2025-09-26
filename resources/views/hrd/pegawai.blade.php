@@ -1,3 +1,6 @@
+@extends('layouts.app')
+@section('content')
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,67 +35,67 @@
 </head>
 
 <body>
-    <div id="app">
+    <!-- <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container ps-1 ms-5 me-0 pe-0">
                 <a class="navbar-brand pe-5 me-5" href="{{ url('/home') }}">Wanna Be Studio
                     <!-- {{ config('app.name', 'Wanna Be Studio') }} -->
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Left Side Of Navbar -->
+        <ul class="navbar-nav me-auto">
 
-                    </ul>
+        </ul>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                        @endif
+        <!-- Right Side Of Navbar -->
+        <ul class="navbar-nav ms-auto">
+            @guest
+            @if (Route::has('login'))
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+            </li>
+            @endif
 
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
-                        <!-- <a href="{{ route('pegawais.index') }}" class="btn btn-primary btn-sm me-2 text-center align-middle">
+            @if (Route::has('register'))
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+            </li>
+            @endif
+            @else
+            <!-- <a href="{{ route('pegawais.index') }}" class="btn btn-primary btn-sm me-2 text-center align-middle">
                             Pegawai
                         </a> -->
 
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
+            <li class="nav-item dropdown">
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    {{ Auth::user()->name }}
+                </a>
 
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
+                        {{ __('Logout') }}
+                    </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                        @endguest
-                    </ul>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </div>
-            </div>
-        </nav>
+            </li>
+            @endguest
+        </ul>
+    </div>
+    </div>
+    </nav>
 
-        <main class="py-1">
-            @yield('content')
-        </main>
+    <main class="py-1">
+        @yield('content')
+    </main>
     </div>
 
     <div class="container-fluid mt-0 pt-0 pe-4 ps-4">
@@ -109,6 +112,7 @@
                 <thead>
                     <tr class="text-center">
                         <th>ID</th>
+                        <th>Foto</th>
                         <th>Nama</th>
                         <th>Jabatan</th>
                         <th>Email</th>
@@ -123,6 +127,21 @@
                     @foreach($pegawais as $pegawai)
                     <tr @if($pegawai->trashed()) class="table-danger" @endif>
                         <td class="text-center">{{ $pegawai->id }}</td>
+
+                        <td class="text-center">
+                            @if($pegawai->profile_photo)
+                            <img src="{{ asset('storage/profile_photos/' . $pegawai->profile_photo) }}"
+                                alt="Foto {{ $pegawai->nama }}"
+                                width="100" height="100"
+                                class="rounded-circle">
+                            @else
+                            <img src="{{ asset('storage/images/default_profile.jpg') }}"
+                                alt="Default Foto"
+                                width="100" height="100"
+                                class="rounded-circle">
+                            @endif
+                        </td>
+
                         <td>{{ $pegawai->nama }}</td>
                         <td>{{ $pegawai->jabatan }}</td>
                         <td>{{ $pegawai->email }}</td>
@@ -138,7 +157,7 @@
                                 <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus pegawai ini?')">Hapus</button>
                             </form>
                         </td> -->
-                        <td>
+                        <td class="text-center">
                             @if(!$pegawai->trashed())
                             <a href="{{ route('pegawais.edit', $pegawai->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('pegawais.destroy', $pegawai->id) }}" method="POST" style="display:inline;">
@@ -167,3 +186,4 @@
 </body>
 
 </html>
+@endsection

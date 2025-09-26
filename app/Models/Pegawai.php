@@ -19,7 +19,8 @@ class Pegawai extends Model
         'telp',
         'alamat',
         'tglmasuk',
-        'gaji'
+        'gaji',
+        'profile_photo'
     ];
 
     protected $dates = ['deleted_at'];

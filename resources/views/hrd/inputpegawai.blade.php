@@ -1,3 +1,6 @@
+@extends('layouts.app')
+@section('content')
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,7 +100,7 @@
                 {{ isset($pegawai) ? 'Edit Pegawai' : 'Tambah Pegawai' }}
             </h2>
 
-            <form action="{{ isset($pegawai) ? route('pegawais.update', $pegawai->id) : route('pegawais.store') }}" method="POST">
+            <form action="{{ isset($pegawai) ? route('pegawais.update', $pegawai->id) : route('pegawais.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @if(isset($pegawai))
                 @method('PUT')
@@ -198,6 +201,27 @@
                     </div>
                 </div>
 
+                <div class="mb-3 text-center">
+                    <label for="profile_photo" class="form-label d-block">Foto Profil</label>
+
+                    <img src="{{ asset('storage/images/default_profile.jpg') }}"
+                        alt="Preview Foto"
+                        class="rounded-circle mb-2"
+                        width="120" height="120"
+                        id="previewImage">
+
+                    <input type="file"
+                        class="form-control mt-2 @error('profile_photo') is-invalid @enderror"
+                        id="profile_photo"
+                        name="profile_photo"
+                        accept="image/*"
+                        onchange="previewFile(event)">
+                    @error('profile_photo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+
                 <div class="text-center pt-2">
                     <button type="submit" class="btn btn-success">Simpan</button>
                     <a href="{{ route('pegawais.index') }}" class="btn btn-secondary">Kembali</a>
@@ -205,7 +229,20 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function previewFile(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('previewImage');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
 </body>
 
 
 </html>
+@endsection
